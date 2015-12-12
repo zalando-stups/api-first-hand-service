@@ -15,8 +15,6 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-scalacheck" % "3.6"  
 )
 
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
-
 resolvers += Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
 
 // Play provides two styles of routers, one expects its actions to be injected, the

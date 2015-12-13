@@ -4,7 +4,7 @@ info:
   title: Echo
   description: |
     Echoes back every URL, method, parameter and header
-    Feel free to make a path or an operation and use **Try Operation** to test it. The echo server will
+    Feel free to make a path or an operation and use _Try Operation_ to test it. The echo server will
     render back everything.
 schemes:
   - http

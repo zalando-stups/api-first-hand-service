@@ -8,10 +8,10 @@
     <h2>Welcome to Play-Swagger</h2>
 
     <p>
-        <em>Congratulations, you’ve just created a new Play-Swagger application!</em>
+        <em>Congratulations, you just created a new Play-Swagger application!</em>
     </p>
     <p>
-        The <a href="http://www.playframework.com/">Play Framework</a> with the <a href="https://github.com/zalando/play-swagger/">Play-Swagger</a> plugin make it easy to build restful web services from a Swagger API specification as the single source of truth. Play is based on a lightweight, stateless, web-friendly architecture. Built on <a href="http://akka.io">Akka</a>, Play provides predictable and minimal resource consumption for highly-scalable applications.  The Play-Swagger plugin takes Swagger API definitions and treats them as the single source of truth of your rest services.
+        The <a href="http://www.playframework.com/">Play Framework</a> with the <a href="https://github.com/zalando/play-Swagger/">Play-Swagger</a> plugin make it easy to build restful web services from a Swagger API specification as the single source of truth. Play is based on a lightweight, stateless, web-friendly architecture. Built on <a href="http://akka.io">Akka</a>, Play provides predictable and minimal resource consumption for highly-scalable applications.  The Play-Swagger plugin takes Swagger API definitions and treats them as the single source of truth of your rest services.
     </p>
     <p>
         Play-Swagger supports round-trip regeneration and compilation of:
@@ -21,11 +21,11 @@
         <li>Swagger domain model definitions and parameters onto Scala case classes (unmanaged).</li>
         <li>Swagger domain model constraints onto Play validations (unmanaged).</li>
         <li>Generators for random test data generation of parameter values (unmanaged).</li>
-        <li>Unit tests for validating the service at API boundary (unmanaged).</li>
+        <li>Unit tests for validating your service at the API boundary (unmanaged).</li>
         <li>Swagger path definitions onto skeletons for Play controller implementations (managed). </li>
     </ul>
     <p>
-        Unmannaged in the list above means that the code does not need to be managed by you, the programmer of the rest service. The plugin takes your swagger API definition as the single source of truth and will regenerate the code in a consistent manner.  You'll instead be focusing on implementing the services' business logic in a managed Play controller class which is generated once, or regenerated if it can not be found.
+        Unmanaged in the list above means that the code <em>does not need to be managed</em> by you, the programmer of the rest service. The plugin takes your Swagger API definition as the single source of truth and will regenerate the code in a consistent manner.  You'll instead be focusing on implementing the service business logic in a managed Play controller class which is generated once, or regenerated if it can not be found.
     </p>
 </div>
 
@@ -36,140 +36,524 @@
         Before we go any further, let's run the application.
     </p>
     <ol>
-        <li>Go to the <a href="#run" class="shortcut">Run</a> page.</li>
-        <li>Click <em>Run</em> to start the application (if needed).</li>
+        <li>Open a shell and <code>cd</code> into your service project directory.</li>
+        <li>Start <code>sbt</code> and <code>run</code> the service.</li>
         <li>View the running application at <a href="http://localhost:9000">http://localhost:9000</a>.</li>
     </ol>
+    <p>
+        The service template comes with the Swagger UI frontend included, run statically from the within Play, which provides a sandbox for your service. The template is configured with a template Swagger API definition called <code>echo.yaml</code> and located in the <code>conf</code> directory of the Play application. The <code>echo.yaml</code> definition provides a minimal API definition shown below. This definition contains two end points, the <code>/</code> path which accept the <code>GET</code> and <code>POST</code> methods and the <code>/test-path/{id}</code> that accepts the <code>GET</code> method. Requesting <code>GET /</code> from the UI will echo the request with an empty body, while requesting <code>POST /</code> which takes two query parameters <code>name</code> and <code>year</code> will echo given parameter values back in the body of a <code>application/json</code> response. As an additional example, requesting <code>GET /test-path/{id}</code> with a given <code>id</code> will echo that <code>id</code> back as a json string value in the body of the response. Try it out for yourself, click the <a href="http://localhost:9000/#!/default">default</a> button to expand the API definition in Swagger UI.
+    </p>
+    <pre>
+        [conf/echo.yaml]
+
+        basePath: /echo
+        paths:
+          /:
+            get:
+              responses:
+                200:
+                  schema:
+                    type: string
+            post:
+              responses:
+                200:
+                  schema:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      year:
+                        type: string
+              parameters:
+                - name: name
+                  in: query
+                  type: string
+                - name: year
+                  in: query
+                  type: string
+          /test-path/{id}:
+            get:
+              parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+              responses:
+                200:
+                  schema:
+                    type: string
+    </pre>
 </div>
 
 <div>
-    <h2>Actions, Controllers and Results</h2>
+    <h2>Play Routes Integration</h2>
 
     <p>
-        In Play, web requests are handled by <code>Action</code>s.
+        As a Play application developer you are used to define your end-points in the <code>conf/routes</code> file. Not so with the Play-Swagger plugin! Swagger API specifications already define endpoints as <code>path</code> definitions as seen in the example above, so why do the work twice, right? Instead the Play-Swagger plugin requires you to link your API definition in the routes file ones, bringing all Swagger API defined end-points available as children of one single path context location, generating Play route definitions from them as shown below.
+    </p>
+    <pre>
+        [conf/routes]
+
+        ->          /echo/          echo.yaml.Routes
+    </pre>
+    <p>
+        Note that the <code>conf/routes</code> file provided by this activator template also contains a couple of aditional <code>GET</code> mappings in order to be able to run the Swagger UI sandbox against the project contained API definition and the service that is generated from it.
+    </p>
+</div>
+<div>
+    <h2>Swagger Domain Definitions</h2>
+    <p>
+        Scala domain model definitions are generated for all data types defined as Swagger parameters in an api specification.  Swagger parameters can be of path, query, header, form or body types and consist of either primitive data types or more complex types composed from objects and arrays with primitives as leaves.  Both primitive types and complex types are mapped to scala.  As an example, lets look at the Swagger api specification file <code>simple.petstore.api.yaml</code> that defines the api of a simple pet store.  It contains a model definition for a pet.
+    </p>
+    <pre>
+        definitions:
+          pet:
+            required:
+              - id
+              - name
+            properties:
+              id:
+                type: integer
+                format: int64
+              name:
+                type: string
+              tag:
+                type: string
+    </pre>
+    <p>
+        This definition consists of an object <code>pet</code> containing the required properties <code>id</code> and <code>name</code> and the optional property <code>tag</code> the Swagger primitive types of these properties are a 64 bit <code>integar</code> and twice a <code>string</code> successively.  The play Swagger plugin will map this definition on to a generated scala model.
+    </p>
+    <pre>
+        package simple.petstore.api.yaml
+        object definitions {
+            type PetTag = Option[String]
+            case class Pet(id: Long, name: String, tag: PetTag)
+        }
+    </pre>
+    <p>
+        This generated model contains a type definition <code>PetTag</code> that declares a type alias for the optional <code>tag</code> property and a <code>Pet</code> case class with the properties as named in the Swagger api definition and mapped on the subsequent scala primitive or declared types.  The case class and type alias are generated in an object <code>definitions</code> taken from the Swagger API specification root property with the same name.  This object itself is contained in the package <code>simple.petstore.api.yaml</code>, which is taken from the API filename.
     </p>
     <p>
-        <code>Action</code>s process each request, perform any work that's needed, and then return a <code>Result</code>. <code>Action</code>s are generated by <code>Controller</code>s.
+        Note that models are generated within a play application as <em>unmanaged</em>em> code in the target folder.  Generated model code is not intended to be altered, we should instead look upon the Swagger definition as the single source of truth, and indeed, as the source code that defines our model.  The Swagger specification file of our API is in that sense part of the codebase.  Even though the generated <code>Pet</code> case class is not managed by us but by the plugin instead, it can of course, after being imported, be used in our application codebase.
+    </p>
+    <pre>
+        import simple.petstore.api.yaml.definitions._
+
+        val pet = Pet(0L, "Tucker", Some("Greyhound"))
+    </pre>
+
+    <h3>Primitive Types</h3>
+    <p>
+        Swagger version 2.0 allows for primitive data types based on the types defined by <a href="http://json-schema.org/latest/json-schema-core.html#anchor8">JSON-Schema</a>.  When generated as scala the following mapping applies.
+    </p>
+    <table>
+        <tr>
+            <th>Common Name</th>
+            <th>Swagger Type</th>
+            <th>Swagger Format</th>
+            <th>Scala Type</th>
+        </tr>
+        <tr>
+            <td>integer</td>
+            <td><code>integer</code></td>
+            <td><code>int32</code></td>
+            <td><code>scala.Int</code></td>
+        </tr>
+        <tr>
+            <td>long</td>
+            <td><code>integer</code></td>
+            <td><code>int64</code></td>
+            <td><code>scala.Long</code></td>
+        </tr>
+        <tr>
+            <td>float</td>
+            <td><code>number</code></td>
+            <td><code>float</code></td>
+            <td><code>scala.Float</code></td>
+        </tr>
+        <tr>
+            <td>double</td>
+            <td><code>number</code></td>
+            <td><code>double</code></td>
+            <td><code>scala.Double</code></td>
+        </tr>
+        <tr>
+            <td>boolean</td>
+            <td><code>boolean</code></td>
+            <td><code></code></td>
+            <td><code>scala.Boolean</code></td>
+        </tr>
+        <tr>
+            <td>string</td>
+            <td><code>string</code></td>
+            <td><code></code></td>
+            <td><code>scala.String</code></td>
+        </tr>
+        <tr>
+            <td>byte</td>
+            <td><code>string</code></td>
+            <td><code>byte</code></td>
+            <td><code>scala.Byte</code></td>
+        </tr>
+        <tr>
+            <td>binary</td>
+            <td><code>string</code></td>
+            <td><code>binary</code></td>
+            <td><em>unsupported</em></td>
+        </tr>
+        <tr>
+            <td>date</td>
+            <td><code>string</code></td>
+            <td><code>date</code></td>
+            <td><code>java.util.Date</code></td>
+        </tr>
+        <tr>
+            <td>datetime</td>
+            <td><code>string</code></td>
+            <td><code>date-time</code></td>
+            <td><code>java.util.Date</code></td>
+        </tr>
+        <tr>
+            <td>password</td>
+            <td><code>string</code></td>
+            <td><code>password</code></td>
+            <td><code>scala.String</code></td>
+        </tr>
+        <tr>
+            <td>file</td>
+            <td><code>file</code></td>
+            <td><code></code></td>
+            <td><code>java.io.File</code></td>
+        </tr>
+    </table>
+
+    <h3>Complex Types</h3>
+    <p>
+        Complex types are defined in Swagger model definitions as either objects or arrays.
+    </p>
+    <h4>Objects</h4>
+    <p>
+        Objects are, again, based on the <a href="http://json-schema.org/latest/json-schema-core.html#anchor8">JSON-Schema</a> specification and defined as Swagger <a href="https://github.com/Swagger-api/Swagger-spec/blob/master/versions/2.0.md#schema-object">Schema Objects</a> for parameter definitions of <code>type: "object"</code>.  For example, given a Swagger api definition file <code>api.yaml</code> containing a model that defines a <code>person</code> as an object with the properties <code>name</code> and <code>age</code> of the primitive types <code>string</code> and <code>integer</code> subsequently, this object will be mapped on a scala case class, generated in a scala object (namespace) with the same name as the root Swagger property in which it occurs.  I.e. <code>definitions</code> and in a package with the same name as the Swagger definition file in which the model is defined, that is, <code>api</code>
+    </p>
+    <pre>
+        definitions:
+          person:
+            type: object
+            required:
+              - name
+              - age
+            properties:
+              name:
+                type: string
+              age:
+                type: integer
+                format: int32
+    </pre>
+    <p>
+        Is generated into:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+            case class Person(name: String, age: Int)
+        }
+    </pre>
+
+    <h4>Nested Objects</h4>
+    <p>
+        Objects can be nested, in which case the scala case class parameter of the outer object that defines the nested object will be the scala case class that is generated for that parameter. E.g.
+    </p>
+    <pre>
+        definitions:
+          parent:
+            type: object
+            required:
+              - child
+            properties:
+              child:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+    </pre>
+    <p>
+        Is generated into:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+          case class Parent(child: Child)
+          case class Child(name: String)
+        }
+    </pre>
+
+    <h4>Optionality</h4>
+    <p>
+        Swagger, by default, defines object properties to be optional, which can be overridden by providing a list of <code>required</code> object properties as already used in the examples above.  Optional properties are mapped upon scala's <code>Option</code> type for which a type alias is generated for each property that is optional. E.g.
+    </p>
+    <pre>
+        definitions:
+          product:
+            required:
+              - name
+            properties:
+              name:
+                type: string
+              tag:
+                type: string
+    </pre>
+    <p>
+        Which is generated as:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+            type ProductTag = Option[String]
+            case class Product(name: String, tag: ProductTag)
+        }
+    </pre>
+    <p>
+        As objects can be nested, so can be object property optionality.  To facilitate for nested optionality, we generate a nested scala <code>Option</code> type alias. E.g.
+    </p>
+    <pre>
+        definitions:
+          Basic:
+            properties:
+              optional:
+                type: object
+                properties:
+                  nested:
+                    type: string
+    </pre>
+    <p>
+        Which is generated as:
+    </p>
+    <pre>
+        object definitions {
+          type BasicOptional = Option[BasicOptionalOpt]
+          type BasicOptionalNested = Option[String]
+          case class Basic(optional: BasicOptional)
+          case class BasicOptionalOpt(nested: BasicOptionalNested)
+        }
+    </pre>
+
+    <h4>Object Extension</h4>
+    <p>
+        Objects can extend other objects via employment of Swaggers' <code>allOff</code> property.  In the example below the <code>ExtendedErrorModel</code> inherits <em>all of</em> the properties of the <code>ErrorModel</code> which it refers to, that is, the properties <code>message</code> and <code>code</code> and <em>extends</em> this model with the property <code>rootCause</code>. Swagger object extension is mapped by duplicating inherited properties in the object that extends. E.g.
+
+    </p>
+    <pre>
+        definitions:
+          ErrorModel:
+            type: object
+            required:
+            - message
+            - code
+            properties:
+              message:
+                type: string
+              code:
+                type: integer
+          ExtendedErrorModel:
+            allOf:
+            - $ref: '#/definitions/ErrorModel'
+            - type: object
+              required:
+              - rootCause
+              properties:
+                rootCause:
+                  type: string
+    </pre>
+    <p>
+        Which is generated as:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+          case class ErrorModel(message: String, code: Int)
+          case class ExtendedErrorModel(message: String, code: Int, rootCause: String)
+        }
+    </pre>
+
+    <h4>Polymorphism</h4>
+    <p>
+        Polymorphic definitions are possible through employment of the Swagger <code>discriminator</code> property.  In the example definition below an abstract <code>Pet</code> defines that what concrete <code>Cat</code> and <code>Dog</code>s have in common.  As Swagger object models are defining data, a discriminator property is required to distinguish concrete cat and dog instances as they are serialised to and from the api.  The discriminator property works in that sense the same way as a discriminator column works in ORM frameworks when mapping a class hierarchy onto a single table.  It simply contains a value that maps onto one of the concrete types, for example <code>petType: "Cat"</code>code> or <code>petType: "Dog"</code>code>.
+    </p>
+    <pre>
+        definitions:
+          Pet:
+            discriminator: petType
+            properties:
+              name:
+                type: string
+              petType:
+                type: string
+            required:
+            - name
+            - petType
+          Cat:
+            allOf:
+            - $ref: '#/definitions/Pet'
+            - properties:
+                huntingSkill:
+                  type: string
+                  default: lazy
+                  enum:
+                  - clueless
+                  - lazy
+                  - adventurous
+                  - aggressive
+              required:
+              - huntingSkill
+          Dog:
+            allOf:
+            - $ref: '#/definitions/Pet'
+            - properties:
+                packSize:
+                  type: integer
+                  format: int32
+              required:
+              - packSize
+    </pre>
+    <p>
+        Which is generated as:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+          trait IPet {
+            def name: String
+            def petType: String
+          }
+          case class Cat(name: String, petType: String, huntingSkill: String) extends IPet
+          case class Dog(name: String, petType: String, packSize: Int) extends IPet
+        }
+    </pre>
+
+    <h4>Additional Properties</h4>
+    <p>
+        Swagger model definition objects allow for additional properties to be loosely defined employing the <code>additionalProperties</code>code> annotation in order to model dictionaries.  These dictionaries are mapped to scala's <code>Map</code>code> type for which a type alias is generated following the same (by now) well known pattern as for optional properties, with the map's key parameter type being a scala <code>String</code>code>.
     </p>
     <p>
-        This application defines a <code>Controller</code> in <a href="#code/app/controllers/Application.scala" class="shortcut">app/controllers/Application.scala</a>. <code>Application</code>'s <code>index</code> method creates an <code>Action</code> which returns a <code>Result</code> of <code>Ok</code>.
+        A Swagger additional property definition takes as its type property the element type of the dictionary which can be of primitive or complex type and which is mapped on scala as the map's value parameter type.  Swagger allows for one <code>additionalProperties</code>code> annotation per object definition so we can generate this scala parameter with the static name <code>additionalProperties</code>code>.
     </p>
     <p>
-        <a href="%PLAY_DOCS_URL%/ScalaActions">Learn about Actions, Controllers and Results</a>
+        In the following example we define a Swagger model object definition <code>KeyedArray</code>code> that uses the <>acodedditionalProperties</p>code> annotation to provide the object with a set of key value mappings from string to array. E.g.
+    </p>
+    <pre>
+        definitions:
+          KeyedArrays:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: integer
+    </pre>
     <p>
+        Which is generated as:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+            type KeyedArraysAdditionalProperties = scala.collection.immutable.Map[String, KeyedArraysAdditionalPropertiesArr]
+            type KeyedArraysAdditionalPropertiesArr = scala.collection.Seq[Int]
+            case class KeyedArrays(additionalProperties: KeyedArraysAdditionalProperties)
+        }
+    </pre>
+
+    <h4>Arrays</h4>
+    <p>
+        Swaggers model <code>type: array</code>code> is used to define properties that hold sets or lists of model values, possibly of a primitive type, but complex element types are also allowed.  We map Swagger array types on scala's <code>Seq</code> type, parameterised for the element type that it contains.
+    </p>
+    <p>
+        For example, in the snippet below, an <code>Activity</code>> object definition is referred as item element in the <code>messages</code> property of <code>type: array</code> of the containing object definition <code>Example</code>  A scala type alias will be generated for the array type, just as we've seen before with for optional properties, after which the array containing property can be generated within the case class as being of this alias type. E.g. in the Swagger definition and code
+    </p>
+    <pre>
+        definitions:
+          Activity:
+            type: object
+            required:
+            - actions
+            properties:
+              actions:
+                type: string
+          Example:
+            type: object
+            required:
+            - messages
+            properties:
+              messages:
+                type: array
+                items:
+                  $ref: '#/definitions/Activity'
+    </pre>
+    <p>
+        Which is generated as:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+          type ExampleMessagesArr = scala.collection.Seq[Activity]
+          case class Activity(actions: ActivityActions)
+          case class Example(messages: ExampleMessagesArr)
+        }
+    </pre>
+
+    <h4>Nested Arrays</h4>
+    <p>
+        Array definition types can be nested and possibly optional. The following (contrived) snippet depicts the generated scala code when both definition types are employed in a somewhat non-useful manner.  The intend of this example is to show that the case class definitions are rather concisely generated, even though a stack of type aliases is needed to make sure that we still refer in scala code to an aptly named Swagger definition, especially in conjunction with the object properties being optional.  Next to its benefits, type safety against <code>null</code> pointers does have an associated cost as well.
+    </p>
+    <pre>
+        definitions:
+          Activity:
+            type: object
+            properties:
+              actions:
+                type: string
+          Example:
+            type: object
+            properties:
+              messages:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Activity'
+              nested:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: string
+    </pre>
+    <p>
+        Which is generated as:
+    </p>
+    <pre>
+        package api.yaml
+        object definitions {
+          type ActivityActions = Option[String]
+          type ExampleNested = Option[ExampleNestedOpt]
+          type ExampleNestedOpt = scala.collection.Seq[ExampleNestedOptArr]
+          type ExampleNestedOptArr = scala.collection.Seq[ExampleNestedOptArrArr]
+          type ExampleNestedOptArrArr = scala.collection.Seq[ActivityActions]
+          type ExampleMessages = Option[ExampleMessagesOpt]
+          type ExampleMessagesOpt = scala.collection.Seq[ExampleMessagesOptArr]
+          type ExampleMessagesOptArr = scala.collection.Seq[Activity]
+          case class Activity(actions: ActivityActions)
+          case class Example(messages: ExampleMessages, nested: ExampleNested)
+        }
+    </pre>
+
 </div>
 
 <div>
-    <h2>HTTP Routing</h2>
-
-    <p>
-        Play routes incoming HTTP requests to their <code>Action</code>s. The mappings between requests and <code>Action</code>s are defined in <a href="#code/conf/routes" class="shortcut">conf/routes</a>.
-    </p>
-    <p>
-        <a href="%PLAY_DOCS_URL%/ScalaRouting">Learn about HTTP Routing</a>
-    <p>
-</div>
-
-<div>
-    <h2>Twirl Templates</h2>
-
-    <p>
-        This application renders HTML using Twirl templates.
-    </p>
-    <p>
-        The templates are defined in the <a href="#code/app/views" class="shortcut">app/views</a> directory. Each Twirl template is compiled into a Scala object which can be called from Java or Scala code.
-    </p>
-    <p>
-        The <code>views.html.index(...)</code> code within <a href="#code/app/controllers/Application.scala" class="shortcut">Application.scala</a> calls the <a href="#code/app/views" class="shortcut">app/views/index.scala.html</a> template.
-    </p>
-    <p>
-        Twirl ships with Play by default but you can use other view technologies too. For example, you could use Handlebars instead of Twirl.
-    </p>
-    <p>
-        <a href="%PLAY_DOCS_URL%/ScalaTemplates">Learn about Twirl Templates</a>
-    <p>
-</div>
-
-<div>
-    <h2>Static Assets</h2>
-
-    <p>
-        Your application automatically serves static resources such as JavaScript, CSS and images.
-    </p>
-    <p>
-        Normal assets live in the <a href="#code/public" class="shortcut">public</a> folder.
-    </p>
-    <p>
-        Assets that need compilation, such as <a href="http://coffeescript.org/">CoffeeScript</a> and <a href="http://lesscss.org/">LESS</a> files, go in the <a href="#code/app/assets" class="shortcut">app/assets</a> folder. These assets have extra processing applied to them.
-    </p>
-    <p>
-        Assets are served by Play's <code>Assets</code> controller. The <code>Assets</code> controller is configured in the <a href="#code/conf/routes" class="shortcut">conf/routes</a> file.
-    </p>
-    <p>
-        <a href="%PLAY_DOCS_URL%/Assets">Learn about Working with Assets</a>
-    <p>
-</div>
-
-<div>
-    <h2>Build System</h2>
-
-    <p>
-        Your Play application is built with <a href="http://www.scala-sbt.org/">sbt</a>.
-    </p>
-    <p>
-        Build configuration is defined in the <a href="#code/build.sbt" class="shortcut">build.sbt</a> file. You can edit this file to add new project dependencies or to change compilation settings.
-    </p>
-    <p>
-        Plugins extend sbt with new behavior. You can set up sbt plugins in the <a href="#code/project/plugins.sbt" class="shortcut">project/plugins.sbt</a> file. The Play sbt plugin is configured in this file. There are also separate plugins to compile assets, such as CoffeeScript and LESS.
-    </p>
-    <p>
-        <a href="%PLAY_DOCS_URL%/Build">Learn about the Build System</a>
-    <p>
-</div>
-
-<div>
-    <h2>Runtime Configuration</h2>
-
-    <p>
-        You can change your application's runtime behavior by editing <a href="#code/conf/application.conf" class="shortcut">conf/application.conf</a> file. There are lots of commented-out settings in there for you to use as a starting point.
-    </p>
-    <p>
-        Play uses the <a href="https://github.com/typesafehub/config#readme" target="_blank">Typesafe Config Library</a> to manage its configuration. Editing the <code>application.conf</code> file is just one of many ways that you can configure your application.
-    </p>
-    <p>
-        <a href="%PLAY_DOCS_URL%/Configuration">Learn about Configuration</a>
-    <p>
-</div>
-
-<div>
-    <h2>Command Line</h2>
-
-    <p>
-        You're probably reading this tutorial right now from within <a href="https://typesafe.com/activator">Typesafe Activator</a>'s browser UI. However, if you prefer, you can build and run your application from the command line.
-    </p>
-    <pre>$ activator ~run</pre>
-    <p>
-        You can run tests from the command line too.
-    </p>
-    <pre>$ activator ~test</pre>
-    <p>
-        <a href="%PLAY_DOCS_URL%/PlayConsole">Learn about the Play console</a>
-    </p>
-</div>
-
-<div>
-    <h2>More Information</h2>
-
-    <p>
-        General information about Play is available from <a href="http://www.playframework.com">playframework.com</a>.
-    </p>
-    <p>
-        There is documentation <a href="%PLAY_DOCS_URL">available online</a>.
-    </p>
-    <p>
-        You can also ask questions on <a href="http://stackoverflow.com/questions/tagged/playframework">Stack Overflow</a>.
-    </p>
-</div>
 
 </body>
 </html>

@@ -319,7 +319,7 @@ object definitions {
 
     <h4>Polymorphism</h4>
     <p>
-        Polymorphic definitions are possible through employment of the Swagger <code>discriminator</code> property.  In the example definition below an abstract <code>Pet</code> defines that what concrete <code>Cat</code> and <code>Dog</code>s have in common.  As Swagger object models are defining data, a discriminator property is required to distinguish concrete cat and dog instances as they are serialised to and from the api.  The discriminator property works in that sense the same way as a discriminator column works in ORM frameworks when mapping a class hierarchy onto a single table.  It simply contains a value that maps onto one of the concrete types, for example <code>petType: "Cat"</code>code> or <code>petType: "Dog"</code>code>.
+        Polymorphic definitions are possible through employment of the Swagger <code>discriminator</code> property.  In the example definition below an abstract <code>Pet</code> defines that what concrete <code>Cat</code> and <code>Dog</code>s have in common.  As Swagger object models are defining data, a discriminator property is required to distinguish concrete cat and dog instances as they are serialised to and from the api.  The discriminator property works in that sense the same way as a discriminator column works in ORM frameworks when mapping a class hierarchy onto a single table.  It simply contains a value that maps onto one of the concrete types, for example <code>petType: "Cat"</code> or <code>petType: "Dog"</code>.
     </p>
     <pre><code>
 definitions:
@@ -556,7 +556,7 @@ object definitions {
     <p>
         As we just changed the parameter type, refreshing Swagger UI will, next to generating validations for that parameter type, force a regeneration of the model, consistent with the validation. That's nice, but note that it still breaks the current implementation of the controller class, as the implementation of the <code>postAction</code> expects <code>year</code> to be of type <code>String</code>.
     </p>
-    <img src="validations-01.png" width="800">
+    <img src="https://raw.githubusercontent.com/zalando/play-swagger-service/master/tutorial/validations-01.png" width="800">
     <p>
         Let's change the implementation. The second parameter <code>year</code> is now not longer (normalised as a type from the <code>name</code> parameter) type <code>PostName</code> but of type <code>PostYear</code> which is not optional any longer. We change the type in the input, and wrap it in a <code>Some</code> when responding as the parameter still is optional in its response.
     </p>

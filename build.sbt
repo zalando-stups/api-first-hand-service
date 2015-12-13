@@ -11,8 +11,8 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   specs2,
-  "org.scalacheck" %% "scalacheck" % "1.12.4",
-  "org.specs2" %% "specs2-scalacheck" % "3.6"  
+  "org.scalacheck" %% "scalacheck"        % "1.12.4",
+  "org.specs2"     %% "specs2-scalacheck" % "3.6"
 )
 
 resolvers += Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)

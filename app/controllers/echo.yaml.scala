@@ -16,16 +16,16 @@ import scala.util.Success
 class EchoYaml extends EchoYamlBase {
         val get = getAction {
             _ => Success(Some(""))
-        }
+        } //////// EOF ////////
         val post = postAction {
             input: (PostName, PostName) =>
             val (name, year) = input
             Success(Some(PostResponses200Opt(name, year)))
-        }
+        } //////// EOF ////////
         val getTest_pathById = getTest_pathByIdAction {
             (id: String) =>
             Success(Some(id))
-        }
+        } //////// EOF ////////
         }
 }
 

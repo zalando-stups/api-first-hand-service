@@ -16,15 +16,15 @@
         Play-Swagger supports round-trip regeneration and compilation of:
     </p>
     <ul>
-        <li>Play routes definitions (unmanaged).</li>
-        <li>Swagger domain model definitions and parameters onto Scala case classes (unmanaged).</li>
-        <li>Swagger domain model constraints onto Play validations (unmanaged).</li>
-        <li>Generators for random test data generation of parameter values (unmanaged).</li>
-        <li>Unit tests for validating your service at the API boundary (unmanaged).</li>
-        <li>Swagger path definitions onto skeletons for Play controller implementations (managed). </li>
+        <li>Play routes definitions (managed).</li>
+        <li>Swagger domain model definitions and parameters onto Scala case classes (managed).</li>
+        <li>Swagger domain model constraints onto Play validations (managed).</li>
+        <li>Generators for random test data generation of parameter values (managed).</li>
+        <li>Unit tests for validating your service at the API boundary (managed).</li>
+        <li>Swagger path definitions onto skeletons for Play controller implementations (unmanaged). </li>
     </ul>
     <p>
-        Unmanaged in the list above means that the code <em>does not need to be managed</em> by you, the programmer of the rest service. The plugin takes your Swagger API definition as the single source of truth and will regenerate the code in a consistent manner.  You'll instead be focusing on implementing the service business logic in a managed Play controller class which is generated once, or regenerated if it can not be found.
+        Managed in the list above means that the code is managed by activator or sbt. The code is not under controlled and altered by you, the programmer of the rest service. The plugin takes your Swagger API definition as the single source of truth and will regenerate these code parts in a consistent manner.  You'll instead be focusing on implementing the service business logic in an (unmanaged) Play controller class which is generated once, subsequent regenerations keep the code that you added, either by commenting out the parts that are not valid anymore, or by adding parts that are needed because you made a change to the API.
     </p>
 </div>
 <div>
@@ -38,7 +38,7 @@
         <li>View the running application at <a href="http://localhost:9000">http://localhost:9000</a>.</li>
     </ol>
     <p>
-        The service template comes with the Swagger UI frontend included, run statically from the within Play, which provides a sandbox for your service. The template is configured with a template Swagger API definition called <code>echo.yaml</code> and located in the <code>conf</code> directory of the Play application. The <code>echo.yaml</code> definition provides a minimal API definition shown below. This definition contains two end points, the <code>/</code> path which accept the <code>GET</code> and <code>POST</code> methods and the <code>/test-path/{id}</code> that accepts the <code>GET</code> method. Requesting <code>GET /</code> from the UI will echo the request with an empty body, while requesting <code>POST /</code> which takes two query parameters <code>name</code> and <code>year</code> will echo given parameter values back in the body of a <code>application/json</code> response. As an additional example, requesting <code>GET /test-path/{id}</code> with a given <code>id</code> will echo that <code>id</code> back as a json string value in the body of the response. Try it out for yourself, click the <a href="http://localhost:9000/#!/default">default</a> button to expand the API definition in Swagger UI.
+        The service template comes with the Swagger UI frontend included, run statically from the within Play, which provides a sandbox for your service. The template is configured with a template Swagger API definition called <code>echo.yaml</code> and located in the <code>conf</code> directory of the Play application. The <code>echo.yaml</code> definition provides a minimal API definition shown below. This definition contains two end points, the <code>/</code> path which accept the <code>GET</code> and <code>POST</code> methods and the <code>/test-path/{id}</code> that accepts the <code>GET</code> method. Requesting <code>GET /</code> from the UI will echo the request with an empty body, while requesting <code>POST /</code> which takes two query parameters <code>name</code> and <code>year</code> will echo given parameter values back in the body of a <code>application/json</code> response. As an additional example, requesting <code>GET /test-path/{id}</code> with a given <code>id</code> will echo that <code>id</code> back as a json string value in the body of the response. Try it out for yourself, click the <a href="http://localhost:9000/">default</a> button to expand the API definition in Swagger UI.
     </p>
     <pre><code>
 [conf/echo.yaml]

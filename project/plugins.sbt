@@ -1,6 +1,4 @@
-resolvers += Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
-
-resolvers += Resolver.bintrayRepo("slavaschmidt","maven")
+resolvers += "zalando-bintray"  at "https://dl.bintray.com/zalando/maven"
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 

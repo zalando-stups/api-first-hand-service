@@ -22,7 +22,7 @@ package echo.yaml {
     class EchoYaml extends EchoYamlBase {
         val get = getAction { _ =>
                         
-                      Success("")
+                      Success(200, "")
 
             
 
@@ -30,14 +30,14 @@ package echo.yaml {
         val post = postAction { input: (PostName, PostName) =>
             val (name, year) = input
             
-                      Success(PostResponses200(name, year))
+                      Success(200, PostResponses200(name, year))
 
             
 
         } //////// EOF ////////  postAction
         val gettest_pathById = gettest_pathByIdAction { (id: String) =>
                         
-                      Success(id)
+                      Success(200, id)
 
             
 

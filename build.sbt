@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   "org.specs2"     %% "specs2-scalacheck" % "3.6"
 )
 
-resolvers += Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
+resolvers += "zalando-bintray"  at "https://dl.bintray.com/zalando/maven"
 
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.

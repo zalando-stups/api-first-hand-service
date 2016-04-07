@@ -1,6 +1,6 @@
 name := "play-swagger-service"
 
-version := "0.1.7"
+version := "0.1.8"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, PlaySwagger)
 

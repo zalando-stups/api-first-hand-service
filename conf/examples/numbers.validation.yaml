@@ -1,0 +1,110 @@
+---
+swagger: '2.0'
+info:
+  version: 0.0.0
+  title: Simple API
+  description: |
+    This specification demonstrates possible number formats and validations.
+    Available formats are:
+      Common Name	type	format	Comments
+      * integer (signed 32 bits): 	type - integer, format:	int32
+      * long (signed 64 bits):	integer	int64
+      * float:	type - number, format: float
+      * double:	type - number, format: double
+    Available validations for any number format are:
+      * maximum: maximum value of the parameter
+      * minimum: minimum value of the parameter
+      * exclusiveMinimum: true if constraint value should be excluded from valid range
+      * exclusiveMaximum: true if constraint value should be included from valid range
+      * multipleOf: if value of the parameter must be a multiplication of the constaint and some integer
+basePath: /number_validation
+paths:
+  /:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - name: integer_optional
+          in: query
+          required: false
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: -10
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          multipleOf: 5
+        - name: integer_required
+          in: query
+          required: true
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: 0
+          exclusiveMinimum: false
+          exclusiveMaximum: false
+          multipleOf: 5
+        - name: long_optional
+          in: query
+          required: false
+          type: integer
+          format: int64
+          maximum: 10
+          minimum: 10
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          multipleOf: 10
+        - name: long_required
+          in: query
+          required: true
+          type: integer
+          format: int64
+          maximum: 10
+          minimum: 0
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          multipleOf: 5
+        - name: float_optional
+          in: query
+          required: false
+          type: number
+          format: float
+          maximum: 10
+          minimum: 1
+          exclusiveMinimum: false
+          exclusiveMaximum: false
+          multipleOf: 5
+        - name: float_required
+          in: query
+          required: true
+          type: number
+          format: float
+          maximum: 10
+          minimum: 10
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          multipleOf: 5
+        - name: double_optional
+          in: query
+          required: false
+          type: number
+          format: double
+          maximum: 10
+          minimum: 0
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          multipleOf: 5
+        - name: double_required
+          in: query
+          required: true
+          type: number
+          format: double
+          maximum: 10
+          minimum: 2
+          exclusiveMinimum: false
+          exclusiveMaximum: false
+          multipleOf: 5
+          multipleOf: 5
+      responses:
+        200:
+          description: OK

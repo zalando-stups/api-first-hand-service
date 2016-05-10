@@ -1,6 +1,6 @@
 name := "play-swagger-service"
 
-version := "0.1.8"
+version := "0.1.9"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, PlaySwagger)
 
@@ -10,12 +10,14 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  specs2,
-  "org.scalacheck" %% "scalacheck"        % "1.12.4",
-  "org.specs2"     %% "specs2-scalacheck" % "3.6"
+  specs2 % Test,
+  "org.scalacheck" %% "scalacheck"        % "1.12.4" % Test,
+  "org.specs2"     %% "specs2-scalacheck" % "3.6" % Test
 )
 
 resolvers += "zalando-bintray"  at "https://dl.bintray.com/zalando/maven"
+
+resolvers += "scalaz-bintray"   at "http://dl.bintray.com/scalaz/releases"
 
 resolvers += Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
 

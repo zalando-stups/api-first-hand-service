@@ -1,0 +1,133 @@
+---
+swagger: '2.0'
+info:
+  version: 0.0.0
+  title: Demo specification for string formats and validations
+  description: |
+    This specification demonstrates possible string formats and string validations.
+    Available formats are:
+      * byte	  - base64 encoded characters
+      * binary	  - any sequence of octets
+      * date	  - As defined by full-date - RFC3339
+      * date-time -	As defined by date-time - RFC3339
+      * password  -	Used to hint UIs the input needs to be obscured.
+    If no format is specified (default), than normal "plain" string is assumed.
+    Available validation for any string format including default and excluding date and date-time are:
+      * pattern   - A regexp pattern
+      * maxLength - A maximal length of the string inclusive (<=)
+      * minLength - A minimal length of the string inclusive (>=)
+    For date and date-time formats all validation are allowed to be defined but ignored during processing.
+produces:
+  - application/json
+  - application/yaml
+basePath: /string_validation
+paths:
+  /string:
+    post:
+      parameters:
+        - name: string_optional
+          in: query
+          required: false
+          type: string
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: string_required
+          in: query
+          required: true
+          type: string
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 10
+          maxLength: 100
+        - name: binary_optional
+          required: false
+          in: body
+          schema:
+            type: string
+            format: binary
+            pattern: "[1-9][A-Z0-9]*"
+            minLength: 10
+            maxLength: 110
+        - name: base64optional
+          in: query
+          required: false
+          type: string
+          format: byte
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: base64required
+          in: query
+          required: true
+          type: string
+          format: byte
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: date_optional
+          in: query
+          required: false
+          type: string
+          format: date
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: date_time_optional
+          in: query
+          required: false
+          type: string
+          format: date-time
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 1
+          maxLength: 10
+        - name: date_required
+          in: query
+          required: true
+          type: string
+          format: date
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: date_time_required
+          in: query
+          required: true
+          type: string
+          format: date-time
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: password_optional
+          in: query
+          required: false
+          type: string
+          format: password
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+        - name: password_required
+          in: query
+          required: true
+          type: string
+          format: password
+          pattern: "[1-9][A-Z0-9]*"
+          minLength: 0
+          maxLength: 10
+      responses:
+        200:
+          description: OK
+  /string2:
+    post:
+      parameters:
+        - name: binary_required
+          in: query
+          required: true
+          in: body
+          schema:
+            type: string
+            format: binary
+            pattern: "[1-9][A-Z0-9]*"
+            minLength: 0
+            maxLength: 10
+      responses:
+        200:
+          description: OK

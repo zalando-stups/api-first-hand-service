@@ -1523,7 +1523,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       if (trigger == null) {
         trigger = false;
       }
-      $('#input_baseUrl').val(url);
+      // $('#input_baseUrl').val(url);
       if (trigger) {
         return this.trigger('update-swagger-ui', {
           url: url

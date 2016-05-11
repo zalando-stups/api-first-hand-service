@@ -25,3 +25,5 @@ GET         /api/*file      controllers.Assets.versioned(path="/public/swagger",
 # ->          /uber/                        uber.api.yaml.Routes
 
 # ->          /petstore/                    simple.petstore.api.yaml.Routes
+
+->            /security                     security.api.yaml.Routes

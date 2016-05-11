@@ -72,6 +72,9 @@ paths:
         items:
           type: string
         collectionFormat: csv
+      - name: count
+        in: query
+        type: integer
       description: Returns pets based on ID
       summary: Find pets by ID
       operationId: getPetsById

@@ -2,7 +2,10 @@ swagger: '2.0'
 info:
   version: '1.0.0'
   title: Swagger Petstore (Simple)
-  description: A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification
+  description:
+    A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification
+    This original specification is augmented with play-swagger specific parts to demonstrate usage of
+    vendor-specific instructions
   termsOfService: http://helloreverb.com/terms/
   contact:
     name: Swagger API team
@@ -11,17 +14,36 @@ info:
   license:
     name: MIT
     url: http://opensource.org/licenses/MIT
-host: petstore.swagger.wordnik.com
-basePath: /api
+host: localhost:9000
+basePath: /petstore
 schemes:
   - http
 consumes:
   - application/json
 produces:
   - application/json
+# the x-api-first-error-mapping area is used to define how errors returned by failing methods
+# should be mapped to HTTP response codes
+# custom defined exceptions must be placed in the same package as a controller
+x-api-first-error-mapping:
+  404:
+    - java.util.NoSuchElementException
+    - java.lang.IndexOutOfBoundsException
+  406:
+    - java.lang.UnsupportedOperationException
+    - java.lang.IllegalArgumentException
+    - java.lang.IllegalStateException
+  409:
+    - java.util.ConcurrentModificationException
+    - java.util.EmptyStackException
+  500:
+    - java.sql.SQLException
 paths:
   /pets:
     get:
+      # the naming convention for the handler method may be overriden using x-api-first-handler
+      # instruction applyed on URL or VERB level. All handlers MUST belong to the same package
+      # this x-api-first-handler is valid only for "GET /pets"
       "x-api-first-handler": "admin.Dashboard.methodLevel"
       description: Returns all pets from the system that the user has access to
       operationId: findPets
@@ -59,6 +81,7 @@ paths:
           schema:
             $ref: '#/definitions/errorModel'
     post:
+      # this x-api-first-handler is valid only for "POST /pets"
       "x-api-first-handler": "admin.Dashboard.postHandler"
       description: Creates a new pet in the store.  Duplicates are allowed
       operationId: addPet
@@ -81,6 +104,7 @@ paths:
           schema:
             $ref: '#/definitions/errorModel'
   /pets/{id}:
+    # this x-api-first-handler is valid for all verbs of the /pets/{id} URL
     "x-api-first-handler": "admin.Dashboard.pathLevel"
     get:
       description: Returns a user based on a single ID, if the user does not have access to the pet

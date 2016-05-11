@@ -12,6 +12,16 @@ GET         /index.html     controllers.Assets.versioned(path="/public/swagger",
 
 GET         /api/*file      controllers.Assets.versioned(path="/public/swagger", file: Asset)
 
-# ->          /number_validation/          numbers.validation.yaml.Routes
+# ->          /number_validation/           numbers.validation.yaml.Routes
 
-# ->          /string_validation/          string_formats.validation.yaml.Routes
+# ->          /string_validation/           string_formats.validation.yaml.Routes
+
+# ->          /cross_spec/                  cross_spec_references.yaml.Routes
+
+# ->          /form_data/                   form_data.yaml.Routes
+
+# ->          /types/                       type_deduplication.yaml.Routes
+
+# ->          /uber/                        uber.api.yaml.Routes
+
+# ->          /petstore/                    simple.petstore.api.yaml.Routes

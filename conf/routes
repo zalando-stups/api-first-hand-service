@@ -4,11 +4,26 @@
 
 GET         /spec/:name     controllers.Swagger.swaggerSpec(name: String)
 
+GET         /list_specs     controllers.Swagger.listSpecs
+
 GET         /               controllers.Assets.versioned(path="/public/swagger", file: Asset = "index.html")
 
 GET         /index.html     controllers.Assets.versioned(path="/public/swagger", file: Asset = "index.html")
 
 GET         /api/*file      controllers.Assets.versioned(path="/public/swagger", file: Asset)
 
-->          /echo/          echo.yaml.Routes
+# ->          /number_validation/           numbers.validation.yaml.Routes
 
+# ->          /string_validation/           string_formats.validation.yaml.Routes
+
+# ->          /cross_spec/                  cross_spec_references.yaml.Routes
+
+# ->          /form_data/                   form_data.yaml.Routes
+
+# ->          /types/                       type_deduplication.yaml.Routes
+
+# ->          /uber/                        uber.api.yaml.Routes
+
+# ->          /petstore/                    simple.petstore.api.yaml.Routes
+
+->            /security                     security.api.yaml.Routes

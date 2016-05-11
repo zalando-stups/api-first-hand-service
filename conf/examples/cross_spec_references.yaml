@@ -1,0 +1,32 @@
+swagger: '2.0'
+info:
+  version: "1.0.0"
+  title: An Example of cross - specification references
+  description: |
+    This specification demonstrates how $ref can reference a part of another specification
+host: localhost:9000
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+basePath: /cross_spec
+paths:
+  /:
+    post:
+      parameters:
+        - name: root
+          in: body
+          required: true
+          description: |
+            Might cross-reference definitions which are part of another specification
+          schema:
+            $ref: "uber.api.yaml#/definitions/Product"
+      responses:
+        200:
+          description: |
+           Might cross-reference definitions which are in separate file and not a part of another specification
+          schema:
+            $ref: "cross_spec_parts/split.petstore.definitions.yaml#/definitions/Pet"
+

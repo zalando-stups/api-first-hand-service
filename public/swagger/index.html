@@ -30,7 +30,8 @@
     <a id="logo" href="http://swagger.io">swagger</a>
     <form id='api_selector'>
       <div class='input'>
-        <input id="input_baseUrl" name="baseUrl" type="text" />
+        <select id="input_baseUrl" name="baseUrl">
+        </select>
       </div>
       <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
       <div class='input'><a id="explore" href="#">Explore</a></div>
@@ -41,20 +42,18 @@
 <div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
 <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
 <script type="text/javascript">
-    $(function () {
-      var specName = '/spec/echo.yaml';
+    var init = function (specNames, spec) {
       var url = window.location.search.match(/url=([^&]+)/);
       if (url && url.length > 1) {
         url = url[1];
       } else {
+        var specName = "/spec/" + spec;
         url = window.location.href;
         if (url.indexOf('#')>0) {
           url = url.substr(0, url.indexOf('#'));
         }
         url = url.substr(0, url.lastIndexOf('/')) + specName;
       }
-
-      $('#input_baseUrl').val(url);
 
       window.swaggerUi = new SwaggerUi({
         url: url,
@@ -103,6 +102,23 @@
       */
       // changeUrl();
       window.swaggerUi.updateSwaggerUi({url: url});
+    };
+    $(function () {
+      $.ajax({
+        url: "list_specs",
+        cache: false
+      })
+      .done(function(specs) {
+        if (specs.length > 0) {
+          $.each(specs, function (i, item) {
+              $('#input_baseUrl').append($('<option>', { value: item, text : item }));
+          });
+          init(specs, specs[0]);
+          $('#input_baseUrl').on('change', function() { init(specs, this.value); });
+        } else {
+          log("No specifications found");
+        }
+      });
     });
   </script>
 </body>

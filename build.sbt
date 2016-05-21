@@ -16,11 +16,12 @@ libraryDependencies ++= Seq(
   "me.jeffmay" %% "play-json-tests" % "1.3.0" % Test
 )
 
-resolvers += "zalando-bintray"  at "https://dl.bintray.com/zalando/maven"
-
-resolvers += "scalaz-bintray"   at "http://dl.bintray.com/scalaz/releases"
-
-resolvers += Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
+resolvers ++= Seq(
+  "zalando-bintray"  at "https://dl.bintray.com/zalando/maven",
+  "scalaz-bintray"   at "http://dl.bintray.com/scalaz/releases",
+  "jeffmay" at "https://dl.bintray.com/jeffmay/maven",
+  Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
+)
 
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.

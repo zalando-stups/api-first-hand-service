@@ -17,9 +17,9 @@ class Swagger extends Controller {
     val path = "conf"
     val file = new File(path)
     if (file != null && file.list() != null) {
-      val files = file.list().toSeq
+      val files = file.listFiles().filterNot(_.isDirectory).map(_.getName).toSeq
       implicit val arrayMarshaller = anyToWritable[Seq[String]]("application/json")
-      val names = files.filterNot(notSpec.contains)
+      val names = files.filterNot(notSpec.contains).filterNot(_.startsWith("."))
       Ok(names)
     } else {
       NotFound("Path could not be found: " + file.getAbsolutePath)

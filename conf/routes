@@ -10,20 +10,26 @@ GET         /               controllers.Assets.versioned(path="/public/swagger",
 
 GET         /index.html     controllers.Assets.versioned(path="/public/swagger", file: Asset = "index.html")
 
+GET         /o2c.html       controllers.Assets.versioned(path="/public/swagger", file: Asset = "o2c.html")
+
+GET         /favicon.ico    controllers.Assets.versioned(path="/public/swagger/images", file: Asset = "favicon.ico")
+
 GET         /api/*file      controllers.Assets.versioned(path="/public/swagger", file: Asset)
 
-# ->          /number_validation/           numbers.validation.yaml.Routes
+# ->          /number_validation           numbers.validation.yaml.Routes
 
-# ->          /string_validation/           string_formats.validation.yaml.Routes
+# ->          /string_validation           string_formats.validation.yaml.Routes
 
-# ->          /cross_spec/                  cross_spec_references.yaml.Routes
+# ->          /cross_spec                  cross_spec_references.yaml.Routes
 
-# ->          /form_data/                   form_data.yaml.Routes
+# ->          /form_data                   form_data.yaml.Routes
 
-# ->          /types/                       type_deduplication.yaml.Routes
+# ->          /types                       type_deduplication.yaml.Routes
 
-# ->          /uber/                        uber.api.yaml.Routes
+# ->          /uber                        uber.api.yaml.Routes
 
-# ->          /petstore/                    simple.petstore.api.yaml.Routes
+# ->          /petstore                    simple.petstore.api.yaml.Routes
 
-->            /security                     security.api.yaml.Routes
+# ->          /security                    security.api.yaml.Routes
+
+->            /example                     example.yaml.Routes

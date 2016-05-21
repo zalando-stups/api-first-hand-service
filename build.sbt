@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   ws,
   specs2 % Test,
   "org.scalacheck" %% "scalacheck"        % "1.12.4" % Test,
-  "org.specs2"     %% "specs2-scalacheck" % "3.6" % Test
+  "org.specs2"     %% "specs2-scalacheck" % "3.6" % Test,
+  "me.jeffmay" %% "play-json-tests" % "1.3.0" % Test
 )
 
 resolvers += "zalando-bintray"  at "https://dl.bintray.com/zalando/maven"

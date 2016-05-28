@@ -2,7 +2,7 @@ name := "play-swagger-service"
 
 version := "0.1.9"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, PlaySwagger)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, ApiFirstCore, ApiFirstPlayScalaCodeGenerator, ApiFirstSwaggerParser)
 
 scalaVersion := "2.11.7"
 
@@ -26,3 +26,6 @@ resolvers ++= Seq(
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 routesGenerator := InjectedRoutesGenerator
+
+apiFirstParsers := Seq(ApiFirstSwaggerParser.swaggerSpec2Ast.value).flatten
+

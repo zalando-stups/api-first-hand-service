@@ -50,7 +50,7 @@ package example.yaml {
             if (loginSuccessfull)
               TokenGet301(fullUrl)
             else
-              TokenGet401
+              TokenGet401()
             // ----- End of unmanaged code area for action  TokenService.tokenGet
         }
         val tokenPost = tokenPostAction { (token: Base64String) =>  

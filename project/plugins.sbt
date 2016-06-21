@@ -6,4 +6,4 @@ resolvers += "scalaz-bintray"   at "http://dl.bintray.com/scalaz/releases"
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin"       % "2.5.4")
 
-addSbtPlugin("de.zalando"        % "api-first-hand" % "0.1.12")
+addSbtPlugin("de.zalando"        % "sbt-api-first-hand" % "0.1.12")

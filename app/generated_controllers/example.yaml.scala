@@ -3,6 +3,8 @@ import play.api.mvc.{Action, Controller}
 
 import play.api.data.validation.Constraint
 
+import play.api.inject.{ApplicationLifecycle,ConfigurationProvider}
+
 import de.zalando.play.controllers._
 
 import PlayBodyParsing._
@@ -10,6 +12,8 @@ import PlayBodyParsing._
 import PlayValidations._
 
 import scala.util._
+
+import javax.inject._
 
 import de.zalando.play.controllers.Base64String
 
@@ -28,7 +32,10 @@ import play.api.http.DefaultWriteables
 
 package example.yaml {
 
-    class ExampleYaml extends ExampleYamlBase {
+    class ExampleYaml @Inject() (lifecycle: ApplicationLifecycle, config: ConfigurationProvider) extends ExampleYamlBase {
+        // ----- Start of unmanaged code area for constructor ExampleYaml
+
+        // ----- End of unmanaged code area for constructor ExampleYaml
         val getUserTodos = getUserTodosAction { input: (BigInt, TodosUser_idGetCount) =>
             val (user_id, count) = input
             // ----- Start of unmanaged code area for action  ExampleYaml.getUserTodos
@@ -40,7 +47,10 @@ package example.yaml {
 }
 package example.yaml {
 
-    class TokenService extends TokenServiceBase {
+    class TokenService @Inject() (lifecycle: ApplicationLifecycle, config: ConfigurationProvider) extends TokenServiceBase {
+        // ----- Start of unmanaged code area for constructor TokenService
+
+        // ----- End of unmanaged code area for constructor TokenService
         val tokenGet = tokenGetAction { input: (String, String, String, TokenGetState) =>
             val (redirect_uri, scope, response_type, state) = input
             // ----- Start of unmanaged code area for action  TokenService.tokenGet
@@ -50,7 +60,7 @@ package example.yaml {
             if (loginSuccessfull)
               TokenGet301(fullUrl)
             else
-              TokenGet401
+              TokenGet401()
             // ----- End of unmanaged code area for action  TokenService.tokenGet
         }
         val tokenPost = tokenPostAction { (token: Base64String) =>  

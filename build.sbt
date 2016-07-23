@@ -1,6 +1,6 @@
-name := "play-swagger-service"
+name := "api-first-hand-activator"
 
-version := "0.1.9"
+version := "0.1.16"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, ApiFirstCore, ApiFirstPlayScalaCodeGenerator, ApiFirstSwaggerParser)
 

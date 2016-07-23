@@ -1,3 +1,3 @@
-# play-swagger-service
+# api-first-hand
 
-An [activator template](https://www.lightbend.com/activator/template/play-swagger-service) for the [play-swagger](https://github.com/zalando/play-swagger) plugin.
+An [activator template](https://www.lightbend.com/activator/template/api-first-hand) for the [api-first-hand](https://github.com/zalando/api-first-hand) plugin.

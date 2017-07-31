@@ -1,4 +1,4 @@
-name := "api-first-hand-activator"
+name := "$name;format="norm"$"
 
 version := "0.1.18"
 

@@ -1,33 +1,12 @@
-name := "api-first-hand-activator"
-
-version := "0.1.18"
-
-lazy val root = (project in file(".")).enablePlugins(PlayScala, ApiFirstCore, ApiFirstPlayScalaCodeGenerator, ApiFirstSwaggerParser)
-
-scalaVersion := "2.11.7"
-
-libraryDependencies ++= Seq(
-  jdbc,
-  cache,
-  ws,
-  specs2 % Test,
-  "org.scalacheck"          %% "scalacheck"         % "1.12.4" % Test,
-  "org.specs2"              %% "specs2-scalacheck"  % "3.6" % Test,
-  "me.jeffmay"              %% "play-json-tests"    % "1.3.0" % Test,
-  "org.scalatestplus.play"  %% "scalatestplus-play" % "1.5.1" % Test
-)
-
-resolvers ++= Seq(
-  "zalando-bintray"  at "https://dl.bintray.com/zalando/maven",
-  "scalaz-bintray"   at "http://dl.bintray.com/scalaz/releases",
-  "jeffmay" at "https://dl.bintray.com/jeffmay/maven",
-  Resolver.url("sbt-plugins", url("http://dl.bintray.com/zalando/sbt-plugins"))(Resolver.ivyStylePatterns)
-)
-
-// Play provides two styles of routers, one expects its actions to be injected, the
-// other, legacy style, accesses its actions statically.
-routesGenerator := InjectedRoutesGenerator
-
-apiFirstParsers := Seq(ApiFirstSwaggerParser.swaggerSpec2Ast.value).flatten
-
-playScalaAutogenerateTests := true
+// This build is for this Giter8 template.
+// To test the template run `g8` or `g8Test` from the sbt session.
+// See http://www.foundweekends.org/giter8/testing.html#Using+the+Giter8Plugin for more details.
+lazy val root = (project in file(".")).
+  settings(
+    name := "api-first-hand-service",
+    test in Test := {
+      val _ = (g8Test in Test).toTask("").value
+    },
+    scriptedLaunchOpts ++= List("-Xms1024m", "-Xmx1024m", "-XX:ReservedCodeCacheSize=128m", "-XX:MaxPermSize=256m", "-Xss2m", "-Dfile.encoding=UTF-8"),
+    resolvers += Resolver.url("typesafe", url("http://repo.typesafe.com/typesafe/ivy-releases/"))(Resolver.ivyStylePatterns)
+  )
